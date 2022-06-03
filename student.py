@@ -18,6 +18,7 @@ class Student:
         return f"Hello {self.name}, you were born in {year}"
     def initials(self):
         return f"Hello {self.name}, your initials are {self.first_name[0]}.{self.second_name[0]}"
+        
 
 
      
