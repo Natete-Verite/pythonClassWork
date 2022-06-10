@@ -1,15 +1,50 @@
 class Account:
-    def __init__(self,name,balance,identification,creation_date):
+    def __init__(self,name,identification,deposits,withdrawals):
+        self.balance = 0
         self.name = name
-        self.balance = balance
         self.identification = identification
-        self.creation_date = creation_date
+        self.deposits = deposits
+        self.withdrawals = withdrawals
     def deposit(self,amount):
-        self.amount = amount
-        self.balance+=amount
-        return f"Hello {self.name}, your balance is {self.balance}"
+        if amount > 0:
+            self.balance+=amount
+            # return f"Hello {self.name}, you have deposited {amount} and your new balance is {self.balance}"
+            self.deposits.append(amount)
+            print(self.deposits)
+            return f"You deposited Ksh {amount} and your new balance is {self.balance}"
+        else:    
+            return f"Deposit amount must be greater than zero"
+            
     def withdraw(self,amount):
-        self.amount = amount
-        self.balance-=amount
-        return f"Hello {self.name}, your balance is {self.balance}"    
-        
+        if amount < self.balance:
+            self.balance-=amount
+            # return f"Hello {self.name}, you have withdrawn {amount} and your new balance is {self.balance}"    
+            self.withdrawals.append(amount)
+            print(self.withdrawals)
+            return f"You withdrew Ksh {amount} and your new balance is {self.balance}"
+        elif amount <=0:
+            return f"Withdraw amount must be greater than zero"    
+        else:    
+            return f"Insuficient funds"
+
+    def deposits_statement(self):
+        for deposit in self.deposits:
+            print(f"You deposited Ksh {deposit}")  
+
+    def withdrawals_statement(self):
+        for withdrawal in self.withdrawals:
+            print(f"You withdrew Ksh {withdrawal}")
+
+    def withdraws(self,amount):
+        if amount > 0:
+            self.balance-=amount+100
+            return f"Hello {self.name}, you have withdrawn {amount} and your new balance is {self.balance}"
+        elif amount <=0:
+            return f"Withdraw amount must be greater than zero" 
+        elif amount == self.balance:
+            return f"Insuficient funds"    
+        else:    
+            return f"Insuficient funds"
+
+    def current_balance(self):
+        return f"The current balance is Ksh {self.balance}"        
