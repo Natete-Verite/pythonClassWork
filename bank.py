@@ -5,6 +5,7 @@ class Account:
         self.identification = identification
         self.deposits = deposits
         self.withdrawals = withdrawals
+        self.transaction_cost = 100
     def deposit(self,amount):
         if amount > 0:
             self.balance+=amount
@@ -21,7 +22,7 @@ class Account:
             # return f"Hello {self.name}, you have withdrawn {amount} and your new balance is {self.balance}"    
             self.withdrawals.append(amount)
             print(self.withdrawals)
-            return f"You withdrew Ksh {amount} and your new balance is {self.balance}"
+            return f"You withdrew Ksh {amount}  your new balance is {self.balance}"
         elif amount <=0:
             return f"Withdraw amount must be greater than zero"    
         else:    
@@ -34,17 +35,20 @@ class Account:
     def withdrawals_statement(self):
         for withdrawal in self.withdrawals:
             print(f"You withdrew Ksh {withdrawal}")
+        
 
     def withdraws(self,amount):
         if amount > 0:
-            self.balance-=amount+100
+            self.balance-=amount+self.transaction_cost
             return f"Hello {self.name}, you have withdrawn {amount} and your new balance is {self.balance}"
         elif amount <=0:
             return f"Withdraw amount must be greater than zero" 
+        elif amount+self.transaction_cost > self.balance:
+            return f"Insuficient funds"  
         elif amount == self.balance:
             return f"Insuficient funds"    
         else:    
             return f"Insuficient funds"
 
     def current_balance(self):
-        return f"The current balance is Ksh {self.balance}"        
+        return f"The current balance is Ksh {self.balance}"     
