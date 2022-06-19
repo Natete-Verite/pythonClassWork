@@ -28,7 +28,6 @@ class Account:
         elif amount> withdrawable_amount:     
             return f"Insuficient funds"
         else:
-            amount < self.balance
             self.balance-=amount+self.transaction_cost
             date = datetime.now() 
             withdr= {"date": date.strftime('%x'), "amount": amount, "narration": f"You withdrew {amount} on {date.strftime('%x %X')}"}
@@ -61,15 +60,15 @@ class Account:
         if amount<=0:
             return "invalid amount"
         if len(self.deposits)<10:
-            return f"You can't borrow money because of few deposits made, make {10-len(self.deposits)} more deposits to qualify"
+            return f"Error! Make {10-len(self.deposits)} more deposits to qualify"
         if amount<100:
-            return "You can only borrow at least 100"
+            return "Error! You can only borrow at least 100"
         if self.balance!=0:
             return f"You have {self.balance} in your account. You are not elligible to borrow money."
         if amount> deposit_sum/3:
-            return f"You are not qualified to borrow this amount. You can borrow atmost {deposit_sum/3}"
+            return f"Error! You can borrow atmost {deposit_sum/3}"
         if self.loan_balance!=0:
-            return f"YOu have unpaid loan of {self.loan_balance}, first clear the loan you have to be elligible"
+            return f"You have unpaid loan of {self.loan_balance}, first clear the loan you have and proceed."
         else:
             interest=(3/100)*amount
             self.loan_balance+=amount+interest
@@ -93,5 +92,5 @@ class Account:
             return "insufficient amount"
         else:
             self.balance-=amount
-            # instance_name.balance+=amount
+            instance_name.balance+=amount
             return f"You have transfered {amount} to account with the name of {instance_name.name}. Your new balance is {self.balance}"
