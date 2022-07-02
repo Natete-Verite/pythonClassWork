@@ -1,3 +1,5 @@
+from ast import Lambda
+from audioop import reverse
 from datetime import datetime
 
 
@@ -16,9 +18,9 @@ class Account:
         else:    
             self.balance+=amount
             date = datetime.now()
-            depos= {"date": date.strftime('%x'), "amount": amount, "narration": f"You deposited {amount} on {date.strftime('%x %X')}"}
+            depos= {"date": date, "amount": amount, "narration": "Deposit"}
             self.deposits.append(depos)
-            return f"You deposited Ksh {amount} and your new balance is {self.balance} on {date.strftime('%x')}"
+            # return f"You deposited Ksh {amount} and your new balance is {self.balance} on {date.strftime('%x')}"
             
             
     def withdraw(self,amount):
@@ -30,7 +32,7 @@ class Account:
         else:
             self.balance-=amount+self.transaction_cost
             date = datetime.now() 
-            withdr= {"date": date.strftime('%x'), "amount": amount, "narration": f"You withdrew {amount} on {date.strftime('%x %X')}"}
+            withdr= {"date": date, "amount": amount, "narration": "Withdraw"}
             self.withdrawals.append(withdr)
             return f"You withdrew Ksh {amount}  your new balance is {self.balance} on {date.strftime('%x')}"    
 
@@ -48,21 +50,20 @@ class Account:
     def full_statement(self):
         statement = self.deposits + self.withdrawals
         for state in statement:
-            if state in self.deposits:
-                print (f"{state['date']}... Deposit... {state['amount']}")
-            elif state in self.withdrawals:
-                 print (f"{state['date']}... Withdrawal... {state['amount']}")   
+            state.sort(key = lambda state:state['date'], reverse=True)   
+            date = state['date'].strftime('%d%m%y')
+            narration = state['narration']
+            amount = state['amount']
+            print(f"{date}....{narration}....{amount}")
 
     def borrow(self,amount):
-        deposit_sum=0
-        for a in self.deposits:
-            deposit_sum+=a["amount"]
+        deposit_sum= sum([deposit[amount]] for deposit in self.deposits)
         if amount<=0:
             return "invalid amount"
         if len(self.deposits)<10:
             return f"Error! Make {10-len(self.deposits)} more deposits to qualify"
-        if amount<100:
-            return "Error! You can only borrow at least 100"
+        if amount<=100:
+            return "Error! You can only borrow more than 100"
         if self.balance!=0:
             return f"You have {self.balance} in your account. You are not elligible to borrow money."
         if amount> deposit_sum/3:
@@ -71,14 +72,16 @@ class Account:
             return f"You have unpaid loan of {self.loan_balance}, first clear the loan you have and proceed."
         else:
             interest=(3/100)*amount
-            self.loan_balance+=amount+interest
-            return f"You have borrowed {amount} and your loan balance to be paid is {self.loan_balance}"
+            self.loan_balance=amount+interest
+            self.balance+=amount
+            return f"You have borrowed {amount} and your new loan balance is {self.loan_balance}"
 
     def loan_repayment(self,amount):
         if amount<=0:
             return "invalid amount"
-        if amount>self.loan_balance:
+        if amount<self.loan_balance:
             remainder=amount-self.loan_balance
+            self.balance+=remainder
             self.loan_balance=0
             return f"Your loan balance is {self.loan_balance} { self.deposit(remainder)}"
         else:
@@ -90,7 +93,8 @@ class Account:
             return "invalid amount"
         elif amount>=self.balance:
             return "insufficient amount"
-        else:
+        elif isinstance(instance_name,Account):
             self.balance-=amount
+            instance_name.deposit(amount)
             instance_name.balance+=amount
             return f"You have transfered {amount} to account with the name of {instance_name.name}. Your new balance is {self.balance}"
